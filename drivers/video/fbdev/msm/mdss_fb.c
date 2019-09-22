@@ -56,6 +56,10 @@
 #include "mdp3_ctrl.h"
 #include "mdss_sync.h"
 
+#ifdef CONFIG_KLAPSE
+#include <linux/klapse.h>
+#endif
+
 extern struct mdss_dsi_ctrl_pdata *change_par_ctrl ;
 extern int change_par_buf;
 #ifdef CONFIG_PROJECT_VINCE
@@ -344,6 +348,9 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 							!mfd->bl_level)) {
 		mutex_lock(&mfd->bl_lock);
 		mdss_fb_set_backlight(mfd, bl_lvl);
+#ifdef CONFIG_KLAPSE
+                set_rgb_slider(bl_lvl);
+#endif
 		mutex_unlock(&mfd->bl_lock);
 	}
 }
