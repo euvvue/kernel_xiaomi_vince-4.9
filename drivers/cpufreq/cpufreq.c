@@ -958,20 +958,6 @@ static ssize_t show_bios_limit(struct cpufreq_policy *policy, char *buf)
 	return sprintf(buf, "%u\n", policy->cpuinfo.max_freq);
 }
 
-
-#ifdef CONFIG_VOLTAGE_CONTROL
-extern ssize_t get_Voltages(char *buf);
-static ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
-{
-	return get_Voltages(buf);
-}
-extern ssize_t set_Voltages(const char *buf, size_t count);
-static ssize_t store_UV_mV_table(struct cpufreq_policy *policy, const char *buf, size_t count)
-{
-	return set_Voltages(buf, count);
-}
-#endif
-
 cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0400);
 cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
@@ -987,10 +973,6 @@ cpufreq_freq_attr_rw(scaling_max_freq);
 cpufreq_freq_attr_rw(scaling_governor);
 cpufreq_freq_attr_rw(scaling_setspeed);
 
-#ifdef CONFIG_VOLTAGE_CONTROL
-cpufreq_freq_attr_rw(UV_mV_table);
-#endif
-
 static struct attribute *default_attrs[] = {
 	&cpuinfo_min_freq.attr,
 	&cpuinfo_max_freq.attr,
@@ -1003,9 +985,6 @@ static struct attribute *default_attrs[] = {
 	&scaling_driver.attr,
 	&scaling_available_governors.attr,
 	&scaling_setspeed.attr,
-#ifdef CONFIG_VOLTAGE_CONTROL
-	&UV_mV_table.attr,
-#endif
 	NULL
 };
 
@@ -1991,9 +1970,16 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
 unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
 					unsigned int target_freq)
 {
+	int ret;
 	target_freq = clamp_val(target_freq, policy->min, policy->max);
 
-	return cpufreq_driver->fast_switch(policy, target_freq);
+        ret = cpufreq_driver->fast_switch(policy, target_freq);
+	if (ret) {
+		cpufreq_times_record_transition(policy, ret);
+		cpufreq_stats_record_transition(policy, ret);
+	}
+
+	return ret;
 }
 EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
 
