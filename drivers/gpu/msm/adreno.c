@@ -104,7 +104,7 @@ static struct adreno_device device_3d0 = {
 	.ft_policy = KGSL_FT_DEFAULT_POLICY,
 	.ft_pf_policy = KGSL_FT_PAGEFAULT_DEFAULT_POLICY,
 	.long_ib_detect = 1,
-    .input_work = __WORK_INITIALIZER(device_3d0.input_work,
+	.input_work = __WORK_INITIALIZER(device_3d0.input_work,
 		adreno_input_work),
 	.pwrctrl_flag = BIT(ADRENO_SPTP_PC_CTRL) | BIT(ADRENO_PPD_CTRL) |
 		BIT(ADRENO_LM_CTRL) | BIT(ADRENO_HWCG_CTRL) |
@@ -434,13 +434,13 @@ void adreno_fault_detect_stop(struct adreno_device *adreno_dev)
  */
 static void adreno_input_work(struct work_struct *work)
 {
-	struct adreno_device *adreno_dev =
-		container_of(work, typeof(*adreno_dev), pwr_on_work);
+	struct adreno_device *adreno_dev = container_of(work,
+			struct adreno_device, input_work);
 	struct kgsl_device *device = KGSL_DEVICE(adreno_dev);
 
 	mutex_lock(&device->mutex);
 
-    device->flags |= KGSL_FLAG_WAKE_ON_TOUCH;
+	device->flags |= KGSL_FLAG_WAKE_ON_TOUCH;
 
 	/*
 	 * Don't schedule adreno_start in a high priority workqueue, we are
@@ -448,7 +448,7 @@ static void adreno_input_work(struct work_struct *work)
 	 */
 	kgsl_pwrctrl_change_state(device, KGSL_STATE_ACTIVE);
 
-    /*
+	/*
 	 * When waking up from a touch event we want to stay active long enough
 	 * for the user to send a draw command.  The default idle timer timeout
 	 * is shorter than we want so go ahead and push the idle timer out
@@ -1027,6 +1027,7 @@ static void adreno_of_get_initial_pwrlevel(struct adreno_device *adreno_dev,
 		init_level = 1;
 
 	pwr->active_pwrlevel = init_level;
+	pwr->default_pwrlevel = init_level;
 }
 
 static int adreno_of_get_legacy_pwrlevels(struct adreno_device *adreno_dev,
