@@ -71,13 +71,13 @@ static struct devfreq_dev_status last_status = { .private_data = &last_xstats };
  */
 void kgsl_pwrscale_sleep(struct kgsl_device *device)
 {
-    struct kgsl_pwrscale *psc = &device->pwrscale;
+	struct kgsl_pwrscale *psc = &device->pwrscale;
 
 	if (!device->pwrscale.enabled)
 		return;
 	device->pwrscale.on_time = 0;
 
-    psc->popp_level = 0;
+	psc->popp_level = 0;
 	clear_bit(POPP_PUSH, &device->pwrscale.popp_state);
 
 	/* to call devfreq_suspend_device() from a kernel thread */
@@ -153,7 +153,7 @@ void kgsl_pwrscale_update_stats(struct kgsl_device *device)
 		struct kgsl_power_stats stats;
 
 		device->ftbl->power_stats(device, &stats);
-        if (psc->popp_level) {
+		if (psc->popp_level) {
 			u64 x = stats.busy_time;
 			u64 y = stats.ram_time;
 
@@ -577,7 +577,7 @@ int kgsl_devfreq_target(struct device *dev, unsigned long *freq, u32 flags)
 			}
 		if (level != pwr->active_pwrlevel)
 			kgsl_pwrctrl_pwrlevel_change(device, level);
-    } else if (popp_stable(device)) {
+	} else if (popp_stable(device)) {
 		popp_trans1(device);
 	}
 

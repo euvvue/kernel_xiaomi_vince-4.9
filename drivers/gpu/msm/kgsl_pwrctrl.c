@@ -190,7 +190,7 @@ static unsigned int _adjust_pwrlevel(struct kgsl_pwrctrl *pwr, int level,
 	break;
 	}
 
-    if (popp && (max_pwrlevel < pwr->active_pwrlevel))
+	if (popp && (max_pwrlevel < pwr->active_pwrlevel))
 		max_pwrlevel = pwr->active_pwrlevel;
 
 	if (level < max_pwrlevel)
@@ -1611,7 +1611,7 @@ static const struct device_attribute *pwrctrl_attr_list[] = {
 	&dev_attr_force_rail_on,
 	&dev_attr_force_no_nap,
 	&dev_attr_bus_split,
-    &dev_attr_default_pwrlevel,
+	&dev_attr_default_pwrlevel,
 	&dev_attr_popp,
 	&dev_attr_gpu_model,
 	&dev_attr_gpu_busy_percentage,
@@ -2575,7 +2575,7 @@ static int kgsl_pwrctrl_enable(struct kgsl_device *device)
 	if (pwr->wakeup_maxpwrlevel) {
 		level = pwr->max_pwrlevel;
 		pwr->wakeup_maxpwrlevel = 0;
-    } else if (kgsl_popp_check(device)) {
+	} else if (kgsl_popp_check(device)) {
 		level = pwr->active_pwrlevel;
 	} else {
 		level = pwr->default_pwrlevel;

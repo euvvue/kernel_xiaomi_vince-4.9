@@ -27,7 +27,6 @@
 #define KGSL_PWREVENT_BUS_FREQ	2
 #define KGSL_PWREVENT_POPP	3
 #define KGSL_PWREVENT_MAX	4
-#define KGSL_PWREVENT_MAX	3
 
 /**
  * Amount of time running at a level to be considered
@@ -116,7 +115,7 @@ struct kgsl_pwrscale {
 	struct work_struct devfreq_notify_ws;
 	ktime_t next_governor_call;
 	struct kgsl_pwr_history history[KGSL_PWREVENT_MAX];
-    int popp_level;
+	int popp_level;
 	unsigned long popp_state;
 	struct thermal_cooling_device *cooling_dev;
 	bool ctxt_aware_enable;
@@ -171,6 +170,6 @@ bool kgsl_popp_check(struct kgsl_device *device);
 	.history[KGSL_PWREVENT_STATE].size = 20, \
 	.history[KGSL_PWREVENT_GPU_FREQ].size = 3, \
 	.history[KGSL_PWREVENT_BUS_FREQ].size = 5, \
-    .history[KGSL_PWREVENT_POPP].size = 5, \
+	.history[KGSL_PWREVENT_POPP].size = 5, \
 	}
 #endif
